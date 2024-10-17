@@ -1,6 +1,5 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
-
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export interface Product {
   id: number;
@@ -8,15 +7,14 @@ export interface Product {
   price: number;
   description: string;
   image: string;
-  
 }
 export interface CartProduct {
   id: number;
   title: string;
   price: number;
-  description:string;
+  description: string;
   quantity: number;
-  image:string|undefined;
+  image: string | undefined;
 }
 
 interface UserState {
@@ -35,6 +33,7 @@ interface StoreState extends UserState, CartState {
   logout: () => void;
   addToCart: (product: Product) => void;
   removeFromCart: (productId: number) => void;
+  deleteFromCart: (productId: number) => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -50,7 +49,9 @@ export const useStore = create<StoreState>()(
       items: [],
       addToCart: (product: Product) =>
         set((state) => {
-          const existingItem = state.items.find((item) => item.id === product.id);
+          const existingItem = state.items.find(
+            (item) => item.id === product.id
+          );
           if (existingItem) {
             return {
               items: state.items.map((item) =>
@@ -76,9 +77,18 @@ export const useStore = create<StoreState>()(
             return acc;
           }, [] as CartProduct[]),
         })),
+      deleteFromCart: (productId: number) =>
+        set((state) => ({
+          items: state.items.reduce((acc, item) => {
+            if (item.id != productId) {
+              acc.push(item);
+            }
+            return acc;
+          }, [] as CartProduct[]),
+        })),
     }),
     {
-      name: 'store-storage',
+      name: "store-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )

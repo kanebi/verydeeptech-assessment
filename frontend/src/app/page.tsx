@@ -22,7 +22,6 @@ interface Product {
   price: number;
   description: string;
   image: string;
-  
 }
 
 export default function Home() {
@@ -42,7 +41,9 @@ export default function Home() {
       setProducts((prevProducts) => [...prevProducts, ...data]);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
-      toast.error("Failed to fetch products. Please try again. Error: "+ `${error}`);
+      toast.error(
+        "Failed to fetch products. Please try again. Error: " + `${error}`
+      );
     }
     setLoading(false);
   };
@@ -58,7 +59,7 @@ export default function Home() {
     fetchProducts();
   };
 
-  const handleAddToCart = (product:Product) => {
+  const handleAddToCart = (product: Product) => {
     addToCart(product);
     toast.success(`${product.title} added to cart!`);
   };
@@ -69,20 +70,40 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="mb-8">
           {/* <h2 className="text-2xl font-bold text-primary mb-4 text-center">Categories</h2> */}
-          <div className="flex justify-center overflow-x-hidden space-x-2 sm:space-x-4 pb-2 ">
-            {categories.map((category, index) => (
-              <button
-                key={index}
-                className={`px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-full ${
-                  selectedCategory === index
-                    ? "bg-primary text-secondary"
-                    : "bg-gray-200 text-gray-800"
-                } whitespace-nowrap`}
-                onClick={() => handleCategoryChange(index)}
-              >
-                {category}
-              </button>
-            ))}
+          <div className="relative">
+            {/* Mobile Carousel */}
+            <div className="md:hidden overflow-x-auto flex items-center space-x-2 pb-2 px-4">
+              {categories.map((category, index) => (
+                <button
+                  key={index}
+                  className={`px-3 py-2 text-sm rounded-full whitespace-nowrap flex-shrink-0 ${
+                    selectedCategory === index
+                      ? "bg-primary text-secondary"
+                      : "bg-gray-200 text-gray-800"
+                  }`}
+                  onClick={() => handleCategoryChange(index)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            
+            {/* Desktop Centered List */}
+            <div className="hidden md:flex justify-center items-center space-x-4">
+              {categories.map((category, index) => (
+                <button
+                  key={index}
+                  className={`px-4 py-2 text-base rounded-full ${
+                    selectedCategory === index
+                      ? "bg-primary text-secondary"
+                      : "bg-gray-200 text-gray-800"
+                  }`}
+                  onClick={() => handleCategoryChange(index)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -117,13 +138,13 @@ export default function Home() {
                         {product.description}
                       </p>
                     </div>
-                    <div className="flex justify-between items-center mt-auto">
-                      <span className="text-sm sm:text-lg font-bold text-secondary">
+                    <div className="flex flex-col mt-auto">
+                      <span className="text-sm sm:text-lg font-bold text-secondary truncate mb-2">
                         ${product.price}
                       </span>
                       <button
                         onClick={() => handleAddToCart(product)}
-                        className="bg-secondary text-white/80 text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 rounded hover:bg-secondary transition-colors"
+                        className="bg-secondary text-white/80 text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 rounded hover:bg-secondary transition-colors w-full"
                       >
                         Add to Cart
                       </button>

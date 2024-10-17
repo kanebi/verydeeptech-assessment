@@ -11,7 +11,7 @@ import logo from '../../app/images/logo.png'
 import { useStore } from "../../store/store";
 
 const Header: React.FC = () => {
-  const { isLoggedIn, logout } = useStore();
+  const { isLoggedIn, logout,items } = useStore();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -47,8 +47,11 @@ const Header: React.FC = () => {
             </div>
           </Link>
           <Link href="/cart">
-            <div className="text-gray-600 hover:text-primary cursor-pointer">
+            <div className="text-gray-600 hover:text-primary cursor-pointer relative">
               <ShoppingCartIcon className="h-6 w-6" />
+              <span className="absolute -top-2 -right-2 bg-primary bg-opacity-50 text-secondary text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {items.length}
+              </span>
             </div>
           </Link>
           <div className="relative">

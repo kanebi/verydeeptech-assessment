@@ -6,7 +6,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { Product,CartProduct, useStore } from '../../store/store';
 
 const Cart: React.FC = () => {
-  const { items: cartItems, addToCart, removeFromCart } = useStore();
+  const { items: cartItems, addToCart, deleteFromCart, removeFromCart } = useStore();
 
   const updateQuantity = (id: number, newQuantity: number) => {
     const item = cartItems.find((item:CartProduct) => item.id === id);
@@ -21,7 +21,7 @@ const Cart: React.FC = () => {
 
   const removeItem = (id: number) => {
     if (cartItems.find((item:CartProduct) => item.id === id)) {
-      removeFromCart(id);
+      deleteFromCart(id);
     }
   };
 
