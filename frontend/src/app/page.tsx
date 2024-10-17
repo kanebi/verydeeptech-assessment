@@ -9,11 +9,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { useStore } from "../store/store";
 
 const categories = [
-  "Electronics",
-  "Clothing",
-  "Home & Garden",
-  "Sports",
-  "Books",
+  "electronics",
+  "jewelery",
+  "men's clothing",
+  "women's clothing",
 ];
 
 interface Product {
@@ -22,10 +21,11 @@ interface Product {
   price: number;
   description: string;
   image: string;
+  category: string;
 }
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -34,12 +34,13 @@ export default function Home() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://fakestoreapi.com/products?limit=10&page=${page}`
-      );
+      let url = `https://fakestoreapi.com/products?limit=10`;
+      if (selectedCategory) {
+        url = `https://fakestoreapi.com/products/category/${selectedCategory}`;
+      }
+      const response = await fetch(url);
       const data = await response.json();
-      setProducts((prevProducts) => [...prevProducts, ...data]);
-      setPage((prevPage) => prevPage + 1);
+      setProducts(data);
     } catch (error) {
       toast.error(
         "Failed to fetch products. Please try again. Error: " + `${error}`
@@ -50,13 +51,12 @@ export default function Home() {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [selectedCategory]);
 
-  const handleCategoryChange = (index: number) => {
-    setSelectedCategory(index);
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
     setProducts([]);
     setPage(1);
-    fetchProducts();
   };
 
   const handleAddToCart = (product: Product) => {
@@ -69,19 +69,28 @@ export default function Home() {
       <ToastContainer />
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="mb-8">
-          {/* <h2 className="text-2xl font-bold text-primary mb-4 text-center">Categories</h2> */}
           <div className="relative">
             {/* Mobile Carousel */}
             <div className="md:hidden overflow-x-auto flex items-center space-x-2 pb-2 px-4">
-              {categories.map((category, index) => (
+              <button
+                className={`px-3 py-2 text-sm rounded-full whitespace-nowrap flex-shrink-0 ${
+                  selectedCategory === ""
+                    ? "bg-primary text-secondary"
+                    : "bg-gray-200 text-gray-800"
+                }`}
+                onClick={() => handleCategoryChange("")}
+              >
+                All
+              </button>
+              {categories.map((category) => (
                 <button
-                  key={index}
+                  key={category}
                   className={`px-3 py-2 text-sm rounded-full whitespace-nowrap flex-shrink-0 ${
-                    selectedCategory === index
+                    selectedCategory === category
                       ? "bg-primary text-secondary"
                       : "bg-gray-200 text-gray-800"
                   }`}
-                  onClick={() => handleCategoryChange(index)}
+                  onClick={() => handleCategoryChange(category)}
                 >
                   {category}
                 </button>
@@ -90,15 +99,25 @@ export default function Home() {
             
             {/* Desktop Centered List */}
             <div className="hidden md:flex justify-center items-center space-x-4">
-              {categories.map((category, index) => (
+              <button
+                className={`px-4 py-2 text-base rounded-full ${
+                  selectedCategory === ""
+                    ? "bg-primary text-secondary"
+                    : "bg-gray-200 text-gray-800"
+                }`}
+                onClick={() => handleCategoryChange("")}
+              >
+                All
+              </button>
+              {categories.map((category) => (
                 <button
-                  key={index}
+                  key={category}
                   className={`px-4 py-2 text-base rounded-full ${
-                    selectedCategory === index
+                    selectedCategory === category
                       ? "bg-primary text-secondary"
                       : "bg-gray-200 text-gray-800"
                   }`}
-                  onClick={() => handleCategoryChange(index)}
+                  onClick={() => handleCategoryChange(category)}
                 >
                   {category}
                 </button>
@@ -162,7 +181,7 @@ export default function Home() {
           </div>
         )}
 
-        {!loading && (
+        {!loading && selectedCategory === "" && (
           <div className="mt-8 text-center">
             <button
               onClick={fetchProducts}
