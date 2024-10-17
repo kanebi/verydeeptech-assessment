@@ -11,7 +11,7 @@ import logo from '../../app/images/logo.png'
 import { useStore } from "../../store/store";
 
 const Header: React.FC = () => {
-  const { isLoggedIn, user, logout } = useStore();
+  const { isLoggedIn, logout } = useStore();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 

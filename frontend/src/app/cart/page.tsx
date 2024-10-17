@@ -3,13 +3,13 @@ import React from 'react';
 import MainLayout from '../../components/layouts/main';
 import Image from 'next/image';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { Product, useStore } from '../../store/store';
+import { Product,CartProduct, useStore } from '../../store/store';
 
 const Cart: React.FC = () => {
   const { items: cartItems, addToCart, removeFromCart } = useStore();
 
   const updateQuantity = (id: number, newQuantity: number) => {
-    const item = cartItems.find((item:Partial<any>) => item.id === id);
+    const item = cartItems.find((item:CartProduct) => item.id === id);
     if (item) {
       if (newQuantity > item.quantity) {
         addToCart(item as Product );
@@ -20,12 +20,12 @@ const Cart: React.FC = () => {
   };
 
   const removeItem = (id: number) => {
-    if (cartItems.find((item:Partial<any>) => item.id === id)) {
+    if (cartItems.find((item:CartProduct) => item.id === id)) {
       removeFromCart(id);
     }
   };
 
-  const total = cartItems.reduce((sum:number, item:Partial<any>) => sum + item.price * item.quantity, 0);
+  const total = cartItems.reduce((sum:number, item:CartProduct) => sum + item.price * item.quantity, 0);
 
   return (
     <MainLayout>

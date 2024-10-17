@@ -30,7 +30,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const { addToCart, removeFromCart } = useStore();
+  const { addToCart } = useStore();
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -42,7 +42,7 @@ export default function Home() {
       setProducts((prevProducts) => [...prevProducts, ...data]);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
-      toast.error("Failed to fetch products. Please try again.");
+      toast.error("Failed to fetch products. Please try again. Error: "+ `${error}`);
     }
     setLoading(false);
   };
