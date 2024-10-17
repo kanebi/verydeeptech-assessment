@@ -6,6 +6,9 @@ import commerceRoutes from "./routes/commerceRoutes";
 import { authenticateToken } from "./middleware/authMiddleware";
 import connectDB from "./db";
 
+import fs from "fs";
+import path from "path";
+
 dotenv.config();
 
 const app = express();
@@ -39,7 +42,15 @@ connectDB()
 
 // Basic route
 app.get("/", (req, res) => {
-  res.send("Welcome to VeryDeep Backend API");
+  const readmePath = path.join(__dirname, "..", "README.md");
+  fs.readFile(readmePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading README file:", err);
+      return res.status(500).send("Error reading README");
+    }
+    res.set("Content-Type", "text/plain");
+    res.send(data);
+  });
 });
 
 // Start server
