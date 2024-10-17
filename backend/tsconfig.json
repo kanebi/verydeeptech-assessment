@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "outDir": "./public",
+    "outDir": "src/public",
     "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
@@ -22,16 +22,6 @@
   ],
   "exclude": [
     "node_modules",
-    "public"
+    "src/public"
   ],
-  "vercel": {
-    "buildCommand": "npm run build",
-    "outputDirectory": "public",
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/server.js"
-      }
-    ]
-  }
 }
