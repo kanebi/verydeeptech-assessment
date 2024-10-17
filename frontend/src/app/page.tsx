@@ -31,16 +31,20 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const { addToCart } = useStore();
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (loadMore = false) => {
     setLoading(true);
     try {
-      let url = `https://fakestoreapi.com/products?limit=10`;
+      let url = `https://fakestoreapi.com/products?limit=${page * 10}`;
       if (selectedCategory) {
         url = `https://fakestoreapi.com/products/category/${selectedCategory}`;
       }
       const response = await fetch(url);
       const data = await response.json();
-      setProducts(data);
+      if (loadMore) {
+        setProducts(prevProducts => [...prevProducts, ...data]);
+      } else {
+        setProducts(data);
+      }
     } catch (error) {
       toast.error(
         "Failed to fetch products. Please try again. Error: " + `${error}`
@@ -51,7 +55,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory]);
+  }, [selectedCategory, page]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -62,6 +66,10 @@ export default function Home() {
   const handleAddToCart = (product: Product) => {
     addToCart(product);
     toast.success(`${product.title} added to cart!`);
+  };
+
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
   return (
@@ -184,7 +192,7 @@ export default function Home() {
         {!loading && selectedCategory === "" && (
           <div className="mt-8 text-center">
             <button
-              onClick={fetchProducts}
+              onClick={handleLoadMore}
               className="bg-secondary text-white px-6 py-3 rounded-full hover:bg-primary transition-colors"
             >
               Load More Products
